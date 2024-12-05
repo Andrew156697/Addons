@@ -1,14 +1,20 @@
-# Sử dụng hình ảnh Alpine làm cơ sở
+# Sử dụng Alpine base image
 FROM alpine:latest
 
-# Cập nhật và cài đặt các gói cần thiết
+# Cập nhật hệ thống và cài đặt các công cụ cần thiết
 RUN apk update && apk add --no-cache \
     ffmpeg \
     git \
     build-base \
-    cmake
+    cmake \
+    libjpeg-turbo-dev \
+    libv4l-dev \
+    linux-headers \
+    gcc \
+    g++ \
+    make
 
-# Tự biên dịch mjpg-streamer nếu không có sẵn trong kho
+# Tải mã nguồn mjpg-streamer và biên dịch
 RUN git clone https://github.com/jacksonliam/mjpg-streamer.git && \
     cd mjpg-streamer/mjpg-streamer-experimental && \
     make && \
@@ -16,11 +22,11 @@ RUN git clone https://github.com/jacksonliam/mjpg-streamer.git && \
     rm -rf /var/cache/apk/* && \
     rm -rf /mjpg-streamer
 
-# Tạo thư mục ứng dụng
+# Đặt thư mục làm việc mặc định
 WORKDIR /app
 
-# Thêm tệp cấu hình hoặc mã nguồn vào Docker container (nếu có)
+# Sao chép mã nguồn của bạn vào container (nếu cần)
 COPY . /app
 
-# Đặt lệnh mặc định khi container chạy
+# Chạy lệnh mặc định
 CMD ["sh"]
