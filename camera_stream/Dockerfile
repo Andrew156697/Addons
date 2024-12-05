@@ -1,12 +1,26 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.18
-FROM ${BUILD_FROM}
+# Sử dụng hình ảnh Alpine làm cơ sở
+FROM alpine:latest
 
-# Install required packages
-RUN apk add --no-cache ffmpeg mjpg-streamer
+# Cập nhật và cài đặt các gói cần thiết
+RUN apk update && apk add --no-cache \
+    ffmpeg \
+    git \
+    build-base \
+    cmake
 
-# Copy run script
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
+# Tự biên dịch mjpg-streamer nếu không có sẵn trong kho
+RUN git clone https://github.com/jacksonliam/mjpg-streamer.git && \
+    cd mjpg-streamer/mjpg-streamer-experimental && \
+    make && \
+    make install && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /mjpg-streamer
 
-# Set default command
-CMD [ "/run.sh" ]
+# Tạo thư mục ứng dụng
+WORKDIR /app
+
+# Thêm tệp cấu hình hoặc mã nguồn vào Docker container (nếu có)
+COPY . /app
+
+# Đặt lệnh mặc định khi container chạy
+CMD ["sh"]
