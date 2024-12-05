@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv bashio
 
-echo "Hello world!"
+echo "Hello, World! This is my first Home Assistant add-on."
 
-python3 -m http.server 8000
+# Keep the add-on running
+while true; do
+  sleep 600
+done
