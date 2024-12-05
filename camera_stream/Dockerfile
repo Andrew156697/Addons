@@ -2,7 +2,9 @@
 FROM alpine:latest
 
 # Cập nhật hệ thống và cài đặt các công cụ cần thiết
-RUN apk update && apk add --no-cache \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.15/main" >> /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.15/community" >> /etc/apk/repositories && \
+    apk update && apk add --no-cache \
     ffmpeg \
     git \
     build-base \
