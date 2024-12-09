@@ -10,5 +10,5 @@
     "5000/tcp": 5000
   },
   "schema": {},
-  "image": "local/pose_camera"
+  "image": "./pose_camera"
 }
