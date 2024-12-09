@@ -1,34 +1,19 @@
-# Sử dụng Alpine base image
-FROM alpine:latest
+FROM python:3.11-slim
 
-# Cập nhật hệ thống và cài đặt các công cụ cần thiết
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.15/main" >> /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/v3.15/community" >> /etc/apk/repositories && \
-    apk update && apk add --no-cache \
-    ffmpeg \
-    git \
-    build-base \
-    cmake \
-    libjpeg-turbo-dev \
-    libv4l-dev \
-    linux-headers \
-    gcc \
-    g++ \
-    make
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libopencv-dev python3-opencv \
+    && rm -rf /var/lib/apt/lists/*
 
-# Tải mã nguồn mjpg-streamer và biên dịch
-RUN git clone https://github.com/jacksonliam/mjpg-streamer.git && \
-    cd mjpg-streamer/mjpg-streamer-experimental && \
-    make && \
-    make install && \
-    rm -rf /var/cache/apk/* && \
-    rm -rf /mjpg-streamer
-
-# Đặt thư mục làm việc mặc định
+# Copy application files
 WORKDIR /app
+COPY app /app
 
-# Sao chép mã nguồn của bạn vào container (nếu cần)
-COPY . /app
+# Install Python dependencies
+RUN pip install opencv-python-headless mediapipe
 
-# Chạy lệnh mặc định
-CMD ["sh"]
+# Expose Flask port
+EXPOSE 5000
+
+# Run the application
+CMD ["/bin/bash", "/app/run.sh"]
