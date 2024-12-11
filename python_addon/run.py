@@ -20,5 +20,5 @@ while True:
                 x = landmark.x  # Normalized x-coordinate
                 y = landmark.y  # Normalized y-coordinate
                 z = landmark.z  # Depth
-                print(f"Landmark {idx}: x={x:.2f}, y={y:.2f}, z={z:.2f}")
+            print(f"Landmark {idx}: x={x:.2f}, y={y:.2f}, z={z:.2f}")
         sleep(1)
