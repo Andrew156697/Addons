@@ -4,11 +4,11 @@ FROM python:3.10.12-slim
 # Cài đặt thư viện OpenCV và các thư viện cần thiết khác
 # Cài đặt các công cụ cần thiết cho việc biên dịch và xử lý GPIO
 RUN apt update && apt install -y \
-    python3-dev\
-    opencv-python-headless
+    python3-dev
+    
 
 RUN pip install opencv-python
-
+RUN pip install opencv-python-headless
 
 # Sao chép script Python vào container
 COPY run.py /run.py
