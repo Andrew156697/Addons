@@ -6,7 +6,7 @@ import mediapipe as mp
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 while True:
     success,frame = camera.read()
     if not success:
