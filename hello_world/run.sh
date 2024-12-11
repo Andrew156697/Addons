@@ -1,3 +1,11 @@
-#!/usr/bin/with-contenv bashio
-echo "Hello $(bashio::config 'name')!"
-python3 -m http.server 8000
+#!/bin/bash
+
+# Đọc cấu hình từ file JSON
+CONFIG_PATH=/data/options.json
+TARGET="$(bashio::config 'target')"
+
+# Khởi chạy dịch vụ
+echo "Starting Hello World Add-on..."
+echo "Target is $TARGET"
+
+
