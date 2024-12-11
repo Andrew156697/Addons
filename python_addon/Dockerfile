@@ -9,6 +9,7 @@ RUN apt update && apt install -y \
 
 RUN pip install opencv-python
 RUN pip install opencv-python-headless
+RUN pip install mediapipe
 
 # Sao chép script Python vào container
 COPY run.py /run.py
