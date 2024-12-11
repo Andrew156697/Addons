@@ -33,7 +33,7 @@ def generate_frames():
             # Draw the pose landmarks on the frame
             if results.pose_landmarks:
                 mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-
+            for x, y
             # Increment frame count
             frame_count += 1
 

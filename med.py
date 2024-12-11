@@ -1,41 +1,37 @@
+from flask import Flask, Response
 import cv2
-import mediapipe as mp
+import threading
 
-# Initialize MediaPipe Pose
-mp_pose = mp.solutions.pose
-pose = mp_pose.Pose()
-mp_drawing = mp.solutions.drawing_utils
+# Flask app
+app = Flask(__name__)
 
-# Open a video stream
-cap = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0)
+frame_lock = threading.Lock()
+current_frame = None
 
-if not cap.isOpened():
-    print("Error: Could not open video stream.")
-    exit()
+def capture_frames():
+    global current_frame
+    while True:
+        success, frame = camera.read()
+        if not success:
+            break
+        with frame_lock:
+            current_frame = frame
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Error: Failed to grab frame.")
-        break
+@app.route('/video_feed')
+def video_feed():
+    def generate():
+        global current_frame
+        while True:
+            with frame_lock:
+                if current_frame is None:
+                    continue
+                _, buffer = cv2.imencode('.jpg', current_frame)
+                frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    # Convert the frame to RGB (MediaPipe requires RGB images)
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-    # Process the frame to detect poses
-    results = pose.process(rgb_frame)
-
-    # Draw the pose landmarks on the frame
-    if results.pose_landmarks:
-        mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-
-    # Display the annotated frame
-    cv2.imshow('BlazePose', frame)
-
-    # Exit loop when 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release resources
-cap.release()
-cv2.destroyAllWindows()
+if __name__ == '__main__':
+    threading.Thread(target=capture_frames, daemon=True).start()
+    app.run(host='0.0.0.0', port=8000)
