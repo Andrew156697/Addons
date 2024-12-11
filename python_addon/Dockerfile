@@ -2,13 +2,12 @@
 FROM python:3.10.12-slim
 
 # Cài đặt thư viện OpenCV và các thư viện cần thiết khác
-RUN apt-get update && \
-    apt-get install -y \
-    ffmpeg \
-    libopencv-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
+# Cài đặt các công cụ cần thiết cho việc biên dịch và xử lý GPIO
+RUN apt update && apt install -y \
+    python3-dev \
+    build-essential \
+    gcc 
+RUN pip install opencv-python
 
 # Sao chép script Python vào container
 COPY run.py /run.py

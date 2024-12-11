@@ -15,7 +15,9 @@ while True:
     count += 1
     if not ret:
         logging.error("Không thể lấy frame từ camera.")
+        print("Không thể lấy frame từ camera.")
         break
     # Hiển thị thông tin trong log
+    print(ret)
     logging.info(f"Frame count: {count}, Camera read success: {ret}")
     sleep(1)
