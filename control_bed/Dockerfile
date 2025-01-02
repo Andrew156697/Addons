@@ -1,17 +1,16 @@
-# Dùng hình ảnh Python làm nền
-FROM python:3.10.12-slim
+FROM python:3.10-slim
 
-# Cài đặt các công cụ cần thiết cho việc biên dịch và xử lý GPIO
-RUN apt update && apt install -y \
-    python3-dev \
-    build-essential \
-    gcc \
-    libgpiod-dev
+# Cài đặt các thư viện cần thiết
+RUN apt-get update && apt-get install -y \
+    libgpiod-dev \
+    && apt-get clean
 
-# Cài đặt gpiozero và các thư viện cần thiết
-RUN pip install gpiozero
+# Cài đặt thư viện Python
+RUN pip install flask lgpio
 
-# Sao chép script Python vào container
-COPY run.py /run.py
+# Copy mã nguồn
+WORKDIR /app
+COPY run.py .
 
-CMD ["python", "run.py"]
+# Chạy ứng dụng
+CMD ["python3", "./run.py"]

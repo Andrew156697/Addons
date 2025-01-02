@@ -1,11 +1,12 @@
-from gpiozero import LED
 from time import sleep
+import lgpio
 
-# Định nghĩa chân GPIO cho LED
-led = LED(17)  # Sử dụng chân GPIO 17
-
+h = lgpio.gpiochip_open(0)
+lgpio.gpio_claim_output(h,17)
 while True:
-    led.on()  # Bật LED
-    sleep(1)  # Chờ 1 giây
-    led.off()  # Tắt LED
-    sleep(1)  # Chờ 1 giây
+ lgpio.gpio_write(h, 17, 1)  # Bật chân GPIO 17
+ print("GPIO 17 đã bật!")
+ sleep(2)
+ lgpio.gpio_write(h,17,0)
+ print("GPIO 17 da tat")
+ sleep(2)
