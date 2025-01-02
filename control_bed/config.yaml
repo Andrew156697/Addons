@@ -10,7 +10,7 @@ arch:
   - armv7
   - i386
 devices:
-  - "/dev/gpiochip0:/dev/gpiochip0"
+  - "/dev/gpiochip0:/dev/gpiochip0:rwm"
   startup: services
 ports:
   8000/tcp: 8000
