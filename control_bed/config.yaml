@@ -1,5 +1,5 @@
-name: "My GPIO Add-on"
-version: "1.0.0"
+name: "RS485"
+version: "1.0.1"
 slug: "gpio_addon"
 description: "An example Add-on to control GPIO."
 arch:

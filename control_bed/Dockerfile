@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     python3-rpi.gpio \
     && apt-get clean
 
-RUN pip install lgpio
+# RUN pip install lgpio
 
 # Cài đặt thư viện Python
 #RUN pip install lgpio
