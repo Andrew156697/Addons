@@ -1,7 +1,7 @@
 name: "RS485"
 version: "1.0.1"
 slug: "gpio_addon"
-description: "An example Add-on to control GPIO."
+description: "Control bed through RS485 protocol "
 arch:
   - armhf
   - armv7
