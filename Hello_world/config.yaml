@@ -21,7 +21,4 @@ options:
     required: true
     example: 50
 schema:
-  head:
-    type: int
-    minimum: 0
-    maximum: 100
+  head: int
