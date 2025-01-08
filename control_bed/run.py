@@ -1,12 +1,13 @@
 import serial
 import time
 import logging
+from LibT import parse_frame
 
 response = ""
 # Forward
-# prefix: # | first=0/1 | pause= 0/1 | head = 0->100| foot = 0->100| lean = 0->100|  
-forward_frame = "#00505050"
-# state_send = False
+# prefix: # | start = 0/1 | first=0/1 | pause= 0/1 | head = 0->100| foot = 0->100| lean = 0->100|  
+forward_frame = "#1|0|0|50|50|50|0"
+
 # Cấu hình logging
 logging.basicConfig(
     level=logging.INFO,  
