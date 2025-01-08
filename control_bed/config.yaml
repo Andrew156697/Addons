@@ -19,36 +19,36 @@ options:
     description: ""
     type: int
     required: true
-    example:
+    example: 50
   first_state: 
     description: ""
     type: int
     required: true
-    example: 
+    example: 50
   pause_state:
     description: ""
     type: int
     required: true
-    example:
+    example: 50
   head: 
     description: ""
     type: int
     required: true
-    example: 
+    example: 50
   foot:
     description: ""
     type: int
     required: true
-    example:
+    example: 50
   lean: 
     description: ""
     type: int
     required: true
-    example: 
+    example: 50
 schema: 
-  start_state:
-  first_state:
-  pause_state:
-  head:
-  foot:
-  lean:
+  start_state: int 
+  first_state: int 
+  pause_state: int 
+  head: int 
+  foot: int 
+  lean: int 
