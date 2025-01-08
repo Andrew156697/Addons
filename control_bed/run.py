@@ -1,6 +1,7 @@
 import serial
 import time
 import logging
+import json
 
 # Forward
 start_state = 0
@@ -16,6 +17,28 @@ Up_max2 = 6000
 Up_max3 = 9000
 Up_max4 = 5000
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
+
+# -----------------------FUNCTION-------------------
+def load_options(file_path):
+    try:
+        with open(file_path, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logging.error(f"Error loading options: {e}")
+        return {}
+def op2parameter(options_path):
+    global start_state, first_state, pause_state, head, foot, lean, sum_value
+    options = load_options(options_path)
+    start_state = int(options.get("start_state"))
+    first_state = int(options.get("first_state"))
+    pause_state = int(options.get("pause_state"))
+    head = int(options.get("head"))
+    foot = int(options.get("foot"))
+    lean = int(options.get("lean"))
+    sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
+
+
+
 
 def Decode_frame(frame):
     # Tìm vị trí dấu # đầu tiên
@@ -62,11 +85,11 @@ SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 def send_and_wait(ser, command, expected_response, timeout=0.5):
+    global start_state, first_state, pause_state, head, foot, lean
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
     while True:
-        global start_state, first_state, pause_state, head, foot, lean, sum_value
         sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
         command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
 
@@ -92,7 +115,7 @@ try:
 
     while True:
         # Tính toán sum và khởi tạo forward_frame
-        sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
+        op2parameter("/data/options.json")
         forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
 
         # Gửi lệnh và chờ phản hồi
