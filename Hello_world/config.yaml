@@ -10,7 +10,8 @@ arch:
   - armhf
   - armv7
   - i386
-startup: services
+startup: application
+boot: manual
 ports:
   8000/tcp: 8000
 
