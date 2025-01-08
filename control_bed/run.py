@@ -18,15 +18,6 @@ Up_max4 = 5000
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
 
 def Decode_frame(frame):
-    """
-    Tách 8 số sau dấu # đầu tiên từ chuỗi.
-
-    Args:
-        frame: Chuỗi chứa dữ liệu.
-
-    Returns:
-        list: Danh sách các số được tách từ chuỗi sau dấu #.
-    """
     # Tìm vị trí dấu # đầu tiên
     first_hash_index = frame.find('#')
 
@@ -70,7 +61,7 @@ logging.basicConfig(
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-def send_and_wait(ser, command, expected_response, timeout=4):
+def send_and_wait(ser, command, expected_response, timeout=0.5):
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
