@@ -1,9 +1,7 @@
 import serial
 import time
 import logging
-from LibT import combine_values, Decode_frame
 
-response = ""
 # Forward
 start_state = 0
 first_state = 0 
@@ -17,8 +15,44 @@ prelean = 0
 Up_max2 = 6000
 Up_max3 = 9000
 Up_max4 = 5000
-sum = start_state + first_state + pause_state + head + foot + lean
+sum = 0
 
+def Decode_frame(frame):
+    """
+    Tách 8 số sau dấu # đầu tiên từ chuỗi.
+
+    Args:
+        frame: Chuỗi chứa dữ liệu.
+
+    Returns:
+        list: Danh sách các số được tách từ chuỗi sau dấu #.
+    """
+    # Tìm vị trí dấu # đầu tiên
+    first_hash_index = frame.find('#')
+    
+    if first_hash_index == -1:
+        raise ValueError("Không tìm thấy dấu # trong chuỗi.")
+
+    # Cắt chuỗi từ vị trí dấu # đầu tiên
+    frame_part = frame[first_hash_index + 1:]
+
+    # Tách chuỗi tại dấu '|'
+    parts = frame_part.split('|')
+
+    # Lấy 8 giá trị đầu tiên sau dấu #
+    if len(parts) < 8:
+        raise ValueError("Không có đủ 8 giá trị sau dấu #.")
+
+    # Chuyển các phần tử thành số nguyên
+    try:
+        numbers = [int(part) for part in parts[:8]]
+    except ValueError:
+        raise ValueError("Chuỗi chứa giá trị không phải số.")
+
+    return numbers
+
+def combine_values(*values):
+    return "#" + "|".join(map(str, values))
 
 # prefix: # | start = 0/1 | first=0/1 | pause= 0/1 | head = 0->100| foot = 0->100| lean = 0->100| sum
 # example: forward_frame = "#1|0|0|50|50|50| 151"
@@ -42,6 +76,7 @@ def send_and_wait(ser, expected_response, timeout=4):
     global response
     while True:
         global start_state,first_state,pause_state,head,foot,lean,sum
+        sum = start_state + first_state + pause_state + head + foot + lean
         forward_frame = combine_values(start_state,first_state,pause_state,head,foot,lean,sum)
         # Gửi lệnh qua RS485
         ser.write(forward_frame.encode('utf-8'))
