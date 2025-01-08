@@ -17,7 +17,7 @@ logging.basicConfig(
 # Cấu hình cổng UART
 SERIAL_PORT = '/dev/ttyAMA0'  
 BAUDRATE = 9600
-def send_and_wait(ser, command, expected_response, timeout=5):
+def send_and_wait(ser, command, expected_response, timeout=4):
     global response
     while True:
         # Gửi lệnh qua RS485
@@ -44,7 +44,7 @@ try:
     logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
 
     while True:
-        send_and_wait(ser, forward_frame, "1:ACK_LED_ON")
+        send_and_wait(ser, forward_frame, forward_frame)
         time.sleep(0.5)
 
 
