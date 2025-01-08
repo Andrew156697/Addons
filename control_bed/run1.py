@@ -1,5 +1,5 @@
-from machine import Pin, PWM, UART
-from utime import sleep, ticks_ms, ticks_diff
+from machine import Pin, UART
+from utime import ticks_ms, ticks_diff
 
 # Define motor states
 REVERSE = 0
@@ -14,7 +14,7 @@ first_time = False
 start_state = False
 pause = False
 lean = 0
-foot = 2000 
+foot = 2000
 head = 3000
 prelean = 0
 prehead = 0
@@ -43,11 +43,13 @@ def send_data(data):
         print(f"UART send error: {e}")
 
 def receive_data():
+    global first_time, start_state, pause, lean, foot, head
     """Receive data through UART."""
     try:
         if uart.any():
             data = uart.read()
             print(f"Received: {data}")
+
             return data
         return None
     except Exception as e:
@@ -161,20 +163,168 @@ def reset_all():
         reset_lo()
 
 def reset_lo():
-    """Reset limit positions."""
-    global prelean, prefoot, prehead
-    print("Resetting limit positions...")
-    try:
-        while DC3_STATUS() != (0, 1, 0) or DC2_STATUS() != (1, 0):
+    global prelean,prefoot, prehead
+    
+    print("Reseting...")
+    
+    if(DC3_STATUS() == (0,1,0)):
+        
+        while(DC2_STATUS() != (1,0)):
             DC2_CONTROL(REVERSE)
-            DC3_CONTROL(REVERSE)
-        prelean = prefoot = prehead = 0
-        print("Reset successful.")
+        DC2_CONTROL(BRAKE)
+        DC3_CONTROL(BRAKE)
+        prelean = 0
+        prehead = 0
+        prefoot = 0
+        print(f"prelean: {prelean}, prehead: {prehead}, prefoot: {prefoot}")
+        print("Reset done!")
         return True
-    except Exception as e:
-        print(f"Reset error: {e}")
+    
+    elif (DC2_STATUS() == (1,0)):
+        while(DC3_STATUS() != (1,0,0)):
+            DC3_CONTROL(REVERSE)
+        DC3_CONTROL(BRAKE)
+        print("DC3_STATUS: ",DC3_STATUS())
+        delay_ms(1000)
+        while(DC3_STATUS() != (0,1,0)):
+            DC3_CONTROL(FORWARD)
+        DC3_CONTROL(BRAKE)
+        print("DC3_STATUS: ",DC3_STATUS())
+        prelean = 0
+        prehead = 0
+        prefoot = 0
+        print(f"prelean: {prelean}, prehead: {prehead}, prefoot: {prefoot}")
+        print("Reset done!")
+        return True
+    else:
+        while True:
+            if DC2_STATUS() == (1,0) or DC3_STATUS() == (0,1,0):
+                print("Correct value!")
+                break
+            DC3_CONTROL(BRAKE)
+            DC2_CONTROL(BRAKE)
+        print("Reset fail!")
         return False
 
+def Init_program():
+    global paused
+    global Up_max2, Up_max3, Up_max3
+    
+    print("Initializating...")
+    DC1_CONTROL(2)
+    DC2_CONTROL(2)
+    DC3_CONTROL(2)
+    DC4_CONTROL(2)
+    delay_ms(500)
+    
+    if (DC2_STATUS() != (0,1)) or (DC3_STATUS() != (0,1,0)):
+        while(reset_lo()==False):
+            reset_lo()
+    print("Reset: ",reset_lo())
+
+    Up_max2 = 0
+    time_up_2 = ticks_ms()
+    while (DC2_STATUS() != (0,1)):
+        DC2_CONTROL(FORWARD)
+    Up_max2 += (ticks_ms() - time_up_2)
+    DC2_CONTROL(BRAKE)
+    delay_ms(1000)
+    while (DC2_STATUS() != (1,0)):
+        DC2_CONTROL(REVERSE)
+    DC2_CONTROL(BRAKE)
+        
+    Up_max3 = 0
+    time_up_3 = ticks_ms()
+    while (DC3_STATUS() != (0,0,1)):
+        DC3_CONTROL(FORWARD)
+    Up_max3 += (ticks_ms() - time_up_3)
+    DC3_CONTROL(BRAKE)
+    delay_ms(1000)
+    while (DC3_STATUS() != (0,1,0)):
+        DC3_CONTROL(REVERSE)
+    DC3_CONTROL(BRAKE)
+    print(f"Up_max2: {Up_max2}, Up_max3: {Up_max3}, Up_max3: {Up_max3}")
+
+
+def run_ver1():
+
+    global prelean, prefoot, prehead, lean, foot, head
+    print("Start...")
+    print(f"head: {head}, prehead: {prehead}, lean: {lean}, prelean:{prelean}")
+    print("Running...")
+
+    if head == prehead and lean == prelean and foot == prefoot:
+        pass
+    else:
+        if lean == 0:
+            print("lean == 0")
+
+            print("DC4 --> 0 1 0\n")
+            while(DC4_STATUS() != (0,1,0)):
+                if (prelean - lean < 0):
+                    DC4_CONTROL(FORWARD)
+                else:
+                    DC4_CONTROL(REVERSE)
+
+            DC4_CONTROL(BRAKE)
+            prelean = 0
+
+            print("check DC2")
+            delay_ms(200)
+            print("head: ",head)
+            print("prehead: ",prehead)
+            
+            if (prehead - head < 0):
+                delay_ms(1000)
+                print("DC2_CONTROL(FORWARD)")
+                time_FORWARD = abs(head - prehead)
+                DC2_CONTROL(FORWARD)
+                delay_ms(time_FORWARD)
+                DC2_CONTROL(BRAKE)
+            else:
+                delay_ms(1000)
+                print("DC2_CONTROL(REVERSE)")
+                time_REVERSE = abs(abs(head - prehead))
+                DC2_CONTROL(REVERSE)
+                delay_ms(time_REVERSE)
+                DC2_CONTROL(BRAKE)
+
+            prehead = head
+            DC2_CONTROL(BRAKE)
+            print(f"head: {head}, prehead: {prehead}, lean: {lean}, prelean:{prelean}")
+            print("Done DC2")
+
+        
+        else:
+            print("lean != 0") # vi vậy head = foot = 0 --> 
+
+            while(DC2_STATUS() != (1,0)):
+                if (prehead - head < 0):
+                    # delay_ms(1000)
+                    DC2_CONTROL(FORWARD)
+                else:
+                    # delay_ms(1000)
+                    DC2_CONTROL(REVERSE)
+                    
+            DC2_CONTROL(BRAKE)
+            prehead = 0
+
+            prefoot = 0
+            if (prelean - lean < 0):
+                delay_ms(1000)
+                print("DC4_CONTROL(FORWARD)")
+                time_FORWARD = abs(prelean - lean)
+                DC4_CONTROL(FORWARD)
+                delay_ms(time_FORWARD)
+            else:
+                delay_ms(1000)
+                print("DC4_CONTROL(REVERSE)")
+                time_REVERSE = abs(prelean - lean)
+                DC4_CONTROL(REVERSE)
+                delay_ms(time_REVERSE)
+            DC4_CONTROL(BRAKE)
+            print(f"head: {head}, prehead: {prehead}, foot: {foot}, prefoot: {prefoot}, lean: {lean}, prelean:{prelean}")
+    
 # Main loop
 def main_loop():
     print("Starting main loop...")
