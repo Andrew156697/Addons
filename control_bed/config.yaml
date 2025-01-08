@@ -17,19 +17,19 @@ devices:
 options:
   start_state:
     description: ""
-    type: int
+    type: bool
     required: true
-    example: 50
+    example: false
   first_state: 
     description: ""
-    type: int
+    type: bool
     required: true
-    example: 50
+    example: false
   pause_state:
     description: ""
-    type: int
+    type: bool
     required: true
-    example: 50
+    example: false
   head: 
     description: ""
     type: int
@@ -46,9 +46,9 @@ options:
     required: true
     example: 50
 schema: 
-  start_state: int 
-  first_state: int 
-  pause_state: int 
+  start_state: bool 
+  first_state: bool 
+  pause_state: bool 
   head: int 
   foot: int 
   lean: int 
