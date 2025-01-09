@@ -17,10 +17,10 @@ Up_max2 = 0
 Up_max3 = 0
 Up_max4 = 0
 sum_value = 0
-old_forward_frame = b""  # Đổi thành byte
+old_forward_frame = b""  # Đã là byte
 send_state = False
-old_receive_frame = b"0"  # Đổi thành byte
-bed_parameters = b"1"  # Đổi thành byte
+old_receive_frame = b"0"  # Đã là byte
+bed_parameters = b"1"  # Đã là byte
 
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
@@ -35,15 +35,16 @@ def op2parameter(options_path):
     global start_state, first_state, pause_state, head, foot, lean, sum_value
     options = load_options(options_path)
     
-    if((int(options.get("lean")) !=0 and int(options.get("head")) != 0 ) or (int(options.get("lean")) != 0 and int(options.get("foot")) != 0)):
+    if((int(options.get("lean")) != 0 and int(options.get("head")) != 0) or 
+       (int(options.get("lean")) != 0 and int(options.get("foot")) != 0)):
         logging.info("Correct value! head - foot - lean")
     else:
         start_state = int(options.get("start_state"))
         first_state = int(options.get("first_state"))
         pause_state = int(options.get("pause_state"))
-        head = int((int(options.get("head"))*Up_max2)/100)
-        foot = int((int(options.get("foot"))*Up_max3)/100)
-        lean = int((int(options.get("lean"))*Up_max4)/100)
+        head = int((int(options.get("head")) * Up_max2) / 100)
+        foot = int((int(options.get("foot")) * Up_max3) / 100)
+        lean = int((int(options.get("lean")) * Up_max4) / 100)
         sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
 
 def Decode_frame(frame):
@@ -59,9 +60,9 @@ def Decode_frame(frame):
     # Tách chuỗi tại dấu '|'
     parts = frame_part.split(b'|')
 
-    # Lấy 8 giá trị đầu tiên sau dấu #
+    # Lấy 9 giá trị đầu tiên sau dấu #
     if len(parts) < 9:
-        raise ValueError("Không có đủ 8 giá trị sau dấu #.")
+        raise ValueError("Không có đủ 9 giá trị sau dấu #.")
 
     # Chuyển các phần tử thành số nguyên
     try:
@@ -72,7 +73,7 @@ def Decode_frame(frame):
     return numbers
 
 def combine_values(*values):
-    return b"|#" + b"|".join(map(str.encode, map(str, values)))
+    return b"#" + b"|".join(map(str.encode, map(str, values)))
 
 def calculate_sum(start, first, pause, head, foot, lean):
     return start + first + pause + head + foot + lean
@@ -99,7 +100,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
 
         if old_forward_frame != command:
             # Gửi lệnh qua RS485
-            logging.info(f"Sent : {command.strip()}")
+            logging.info(f"Sent: {command.strip()}")
             old_forward_frame = command
 
         # Chờ phản hồi
