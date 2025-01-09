@@ -109,9 +109,9 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
                 response = ser.readline().strip()
                 logging.info(f"Received: {response}")
-                
+                bed_parameters = Decode_frame(response)
+
                 if old_receive_frame != bed_parameters:
-                    bed_parameters = Decode_frame(response)
                     if len(bed_parameters) == 9:
                         (
                             start_state,
