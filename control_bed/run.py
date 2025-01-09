@@ -20,6 +20,7 @@ sum_value = 0  # Tránh dùng từ khóa Python như "sum"
 old_forward_frame = ""
 send_state = False
 old_receive_frame = ""
+bed_parameters = ""
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
     try:
@@ -110,9 +111,9 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
                 response = ser.readline().decode("utf-8").strip()
                 logging.info(f"Received: {response}")
-                if old_receive_frame != response:
-                    old_receive_frame = Decode_frame(response)
-                    if len(old_receive_frame) == 9:
+                if old_receive_frame != bed_parameters:
+                    bed_parameters = Decode_frame(response)
+                    if len(bed_parameters) == 9:
                         (
                             int(start_state),
                             int(first_state), 
@@ -123,12 +124,12 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                             Up_max2,
                             Up_max3,
                             Up_max4
-                        )
+                        ) = bed_parameters
                     op2parameter("/data/options.json")
                     forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
                     ser.write(forward_frame.encode("utf-8"))
                     logging.info(f"Sent: {forward_frame.strip()}")
-                    old_receive_frame = response
+                    old_receive_frame = bed_parameters
         
         return
                 
