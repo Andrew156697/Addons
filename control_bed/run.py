@@ -17,6 +17,7 @@ Up_max2 = 6000
 Up_max3 = 9000
 Up_max4 = 5000
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
+old_forward_frame = ""
 
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
@@ -85,17 +86,18 @@ SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 def send_and_wait(ser, command, expected_response, timeout=0.5):
-    global start_state, first_state, pause_state, head, foot, lean
+    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
     while True:
         sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
         command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-
-        # Gửi lệnh qua RS485
-        ser.write(command.encode("utf-8"))
-        logging.info(f"Sent: {command.strip()}")
+        
+        if old_forward_frame != command:
+            # Gửi lệnh qua RS485
+            ser.write(command.encode("utf-8"))
+            logging.info(f"Sent: {command.strip()}")
 
         # Chờ phản hồi
         start_time = time.time()
@@ -117,9 +119,10 @@ try:
         # Tính toán sum và khởi tạo forward_frame
         op2parameter("/data/options.json")
         forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-
-        # Gửi lệnh và chờ phản hồi
-        send_and_wait(ser, forward_frame, forward_frame)
+        if old_forward_frame == forward_frame:
+            # Gửi lệnh và chờ phản hồi
+            send_and_wait(ser, forward_frame, forward_frame)
+            old_forward_frame = forward_frame
         time.sleep(0.5)
 
 except serial.SerialException as e:
