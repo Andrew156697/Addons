@@ -115,9 +115,9 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                     bed_parameters = Decode_frame(response)
                     if len(bed_parameters) == 9:
                         (
-                            int(start_state),
-                            int(first_state), 
-                            int(pause_state),
+                            start_state,
+                            first_state, 
+                            pause_state,
                             prehead, 
                             prefoot, 
                             prelean,
