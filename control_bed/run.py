@@ -98,18 +98,18 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
     while True:
         # sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
         # command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-        ser.write(command.encode("utf-8"))
+        ser.write(command)
 
         if old_forward_frame != command:
             # Gửi lệnh qua RS485
-            logging.info(f"Sent: {command.strip()}")
+            logging.info(f"Sent: {command}")
             old_forward_frame = command
 
         # Chờ phản hồi
         start_time = time.time()
         while time.time() - start_time < timeout:
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
-                response = ser.readline().decode("utf-8", errors="replace").strip()
+                response = ser.read_all()
                 logging.info(f"Received: {response}")
                 
                 if old_receive_frame != bed_parameters:
@@ -129,8 +129,8 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                     op2parameter("/data/options.json")
                     logging.info(f"head: {head}, lean: {lean}")
                     forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-                    ser.write(forward_frame.encode("utf-8"))
-                    logging.info(f"Sent: {forward_frame.strip()}")
+                    ser.write(forward_frame)
+                    logging.info(f"Sent: {forward_frame}")
                     old_receive_frame = bed_parameters
         
         return
