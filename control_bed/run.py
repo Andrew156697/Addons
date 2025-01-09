@@ -127,6 +127,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                             Up_max4
                         ) = bed_parameters
                     op2parameter("/data/options.json")
+                    logging.info(f"head: {head}, lean: {lean}")
                     forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
                     ser.write(forward_frame.encode("utf-8"))
                     logging.info(f"Sent: {forward_frame.strip()}")
