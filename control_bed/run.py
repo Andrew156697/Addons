@@ -33,7 +33,7 @@ def op2parameter(options_path):
     options = load_options(options_path)
     
     if((int(options.get("lean")) !=0 and int(options.get("head")) != 0 ) or (int(options.get("lean")) != 0 and int(options.get("foot")) != 0)):
-        print("Correct value! head - foot - lean")
+        logging.info("Correct value! head - foot - lean")
     else:
         start_state = int(options.get("start_state"))
         first_state = int(options.get("first_state"))
