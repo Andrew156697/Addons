@@ -109,7 +109,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
         start_time = time.time()
         while time.time() - start_time < timeout:
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
-                response = ser.readline().decode("utf-8").strip()
+                response = ser.readline().decode("utf-8", errors="replace").strip()
                 logging.info(f"Received: {response}")
                 
                 if old_receive_frame != bed_parameters:
