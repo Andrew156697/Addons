@@ -91,14 +91,14 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
     while True:
-        sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
-        command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
+        # sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
+        # command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
 
         # if old_forward_frame != command:
             # Gửi lệnh qua RS485
         ser.write(command.encode("utf-8"))
         logging.info(f"Sent: {command.strip()}")
-        old_forward_frame = command
+        # old_forward_frame = command
 
         # Chờ phản hồi
         start_time = time.time()
