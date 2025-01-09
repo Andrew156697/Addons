@@ -19,7 +19,7 @@ Up_max4 = 5000
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
 old_forward_frame = ""
 send_state = False
-
+old_receive_frame = ""
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
     try:
@@ -112,6 +112,10 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
                 response = ser.readline().decode("utf-8").strip()
                 logging.info(f"Received: {response}")
+                if old_receive_frame != response:
+                    ser.write(command.encode("utf-8"))
+                    old_receive_frame = response
+                
         #         if response == expected_response:  # Kiểm tra phản hồi đúng
         #             return True
         # logging.warning("No valid response, resending...")  # Nếu không nhận được phản hồi đúng, gửi lại lệnh
