@@ -18,6 +18,7 @@ Up_max3 = 9000
 Up_max4 = 5000
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
 old_forward_frame = ""
+send_state = False
 
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
@@ -30,13 +31,18 @@ def load_options(file_path):
 def op2parameter(options_path):
     global start_state, first_state, pause_state, head, foot, lean, sum_value
     options = load_options(options_path)
-    start_state = int(options.get("start_state"))
-    first_state = int(options.get("first_state"))
-    pause_state = int(options.get("pause_state"))
-    head = int(options.get("head"))
-    foot = int(options.get("foot"))
-    lean = int(options.get("lean"))
-    sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
+    
+    if((int(options.get("lean")) !=0 and int(options.get("head")) != 0 ) or (int(options.get("lean")) != 0 and int(options.get("foot")) != 0)):
+        print("Correct value! head - foot - lean")
+    else:
+        start_state = int(options.get("start_state"))
+        first_state = int(options.get("first_state"))
+        pause_state = int(options.get("pause_state"))
+        head = int(options.get("head"))
+        foot = int(options.get("foot"))
+        lean = int(options.get("lean"))
+        sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
+    
 
 
 
@@ -86,7 +92,7 @@ SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 def send_and_wait(ser, command, expected_response, timeout=0.5):
-    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame
+    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame, send_state
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
