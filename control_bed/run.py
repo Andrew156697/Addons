@@ -38,9 +38,9 @@ def op2parameter(options_path):
         start_state = int(options.get("start_state"))
         first_state = int(options.get("first_state"))
         pause_state = int(options.get("pause_state"))
-        head = int(options.get("head"))
-        foot = int(options.get("foot"))
-        lean = int(options.get("lean"))
+        head = int((int(options.get("head"))*Up_max2)/100)
+        foot = int((int(options.get("foot"))*Up_max3)/100)
+        lean = int((int(options.get("lean"))*Up_max4)/100)
         sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
     
 
