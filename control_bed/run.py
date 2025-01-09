@@ -67,7 +67,7 @@ def Decode_frame(frame):
     return numbers
 
 def combine_values(*values):
-    return "#" + "|".join(map(str, values))
+    return "|#" + "|".join(map(str, values))
 
 # prefix: # | start = 0/1 | first=0/1 | pause= 0/1 | head = 0->100| foot = 0->100| lean = 0->100| sum
 # example: forward_frame = "#1|0|0|50|50|50| 151"
