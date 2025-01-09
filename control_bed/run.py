@@ -133,23 +133,25 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
         
         return
 
-try:
-    # Mở cổng serial
-    ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.5)
-    logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
+while True:
 
-    while True:
-        # Tính toán sum và khởi tạo forward_frame
-        op2parameter("/data/options.json")
-        forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-        send_and_wait(ser, forward_frame, forward_frame)
-        time.sleep(0.5)
+    try:
+        # Mở cổng serial
+        ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.5)
+        logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
 
-except serial.SerialException as e:
-    logging.error(f"Serial error: {e}")
-except KeyboardInterrupt:
-    logging.info("Program interrupted by user.")
-finally:
-    if "ser" in locals() and ser.is_open:
-        ser.close()
-        logging.info("Serial port closed.")
+        while True:
+            # Tính toán sum và khởi tạo forward_frame
+            op2parameter("/data/options.json")
+            forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
+            send_and_wait(ser, forward_frame, forward_frame)
+            time.sleep(0.5)
+
+    except serial.SerialException as e:
+        logging.error(f"Serial error: {e}")
+    except KeyboardInterrupt:
+        logging.info("Program interrupted by user.")
+    finally:
+        if "ser" in locals() and ser.is_open:
+            ser.close()
+            logging.info("Serial port closed.")
