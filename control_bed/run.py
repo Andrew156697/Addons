@@ -94,11 +94,11 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
         # sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
         # command = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
 
-        # if old_forward_frame != command:
+        if old_forward_frame != command:
             # Gửi lệnh qua RS485
-        ser.write(command.encode("utf-8"))
-        logging.info(f"Sent: {command.strip()}")
-        # old_forward_frame = command
+            ser.write(command.encode("utf-8"))
+            logging.info(f"Sent: {command.strip()}")
+            old_forward_frame = command
 
         # Chờ phản hồi
         start_time = time.time()
@@ -120,10 +120,10 @@ try:
         # Tính toán sum và khởi tạo forward_frame
         op2parameter("/data/options.json")
         forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
-        if old_forward_frame != forward_frame:
+        # if old_forward_frame != forward_frame:
             # Gửi lệnh và chờ phản hồi
-            send_and_wait(ser, forward_frame, forward_frame)
-            old_forward_frame = forward_frame
+        send_and_wait(ser, forward_frame, forward_frame)
+            # old_forward_frame = forward_frame
         time.sleep(0.5)
 
 except serial.SerialException as e:
