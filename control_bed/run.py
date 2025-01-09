@@ -7,15 +7,15 @@ import json
 start_state = 0
 first_state = 0
 pause_state = 0
-head = 50
-foot = 60
+head = 0
+foot = 0
 lean = 0
 prehead = 0
 prefoot = 0
 prelean = 0
-Up_max2 = 6000
-Up_max3 = 9000
-Up_max4 = 5000
+Up_max2 = 0
+Up_max3 = 0
+Up_max4 = 0
 sum_value = 0  # Tránh dùng từ khóa Python như "sum"
 old_forward_frame = ""
 send_state = False
@@ -92,7 +92,8 @@ SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 def send_and_wait(ser, command, expected_response, timeout=0.5):
-    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame, send_state,old_receive_frame
+    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame, send_state, old_receive_frame
+    global Up_max2, Up_max3, Up_max4
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """

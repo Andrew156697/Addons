@@ -1,5 +1,5 @@
 name: "RS485"
-version: "1.1.13"
+version: "1.1.14"
 slug: "gpio_addon"
 description: "Control bed through RS485 protocol "
 arch:
