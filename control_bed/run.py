@@ -42,9 +42,6 @@ def op2parameter(options_path):
         foot = int((int(options.get("foot"))*Up_max3)/100)
         lean = int((int(options.get("lean"))*Up_max4)/100)
         sum_value = calculate_sum(start_state, first_state, pause_state, head, foot, lean)
-    
-
-
 
 
 def Decode_frame(frame):
@@ -61,12 +58,12 @@ def Decode_frame(frame):
     parts = frame_part.split('|')
 
     # Lấy 8 giá trị đầu tiên sau dấu #
-    if len(parts) < 8:
+    if len(parts) < 9:
         raise ValueError("Không có đủ 8 giá trị sau dấu #.")
 
     # Chuyển các phần tử thành số nguyên
     try:
-        numbers = [int(part) for part in parts[:8]]
+        numbers = [int(part) for part in parts[:9]]
     except ValueError:
         raise ValueError("Chuỗi chứa giá trị không phải số.")
 
@@ -114,8 +111,26 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                 response = ser.readline().decode("utf-8").strip()
                 logging.info(f"Received: {response}")
                 if old_receive_frame != response:
-                    ser.write(command.encode("utf-8"))
+                    old_receive_frame = Decode_frame(response)
+                    if len(old_receive_frame) == 9:
+                        (
+                            int(start_state),
+                            int(first_state), 
+                            int(pause_state),
+                            prehead, 
+                            prefoot, 
+                            prelean,
+                            Up_max2,
+                            Up_max3,
+                            Up_max4
+                        )
+                    op2parameter("/data/options.json")
+                    forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
+                    ser.write(forward_frame.encode("utf-8"))
+                    logging.info(f"Sent: {forward_frame.strip()}")
                     old_receive_frame = response
+        
+        return
                 
         #         if response == expected_response:  # Kiểm tra phản hồi đúng
         #             return True
