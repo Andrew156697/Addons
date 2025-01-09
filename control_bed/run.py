@@ -90,7 +90,7 @@ SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 def send_and_wait(ser, command, expected_response, timeout=0.5):
-    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame, send_state, old_receive_frame
+    global start_state, first_state, pause_state, head, foot, lean, old_forward_frame, send_state, old_receive_frame, bed_parameters
     global Up_max2, Up_max3, Up_max4
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
