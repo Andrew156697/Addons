@@ -131,7 +131,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                     logging.info(f"Sent: {forward_frame.strip()}")
                     old_receive_frame = bed_parameters
         
-        return
+        # return
 
 while True:
 
