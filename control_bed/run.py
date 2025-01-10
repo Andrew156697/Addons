@@ -52,7 +52,7 @@ def Decode_frame(frame):
     first_hash_index = frame.find(b'#')
 
     if first_hash_index == -1:
-        raise ValueError("Không tìm thấy dấu # trong chuỗi.")
+        logging.info("Không tìm thấy dấu # trong chuỗi.")
 
     # Cắt chuỗi từ vị trí dấu # đầu tiên
     frame_part = frame[first_hash_index + 1:]
@@ -62,13 +62,13 @@ def Decode_frame(frame):
 
     # Lấy 9 giá trị đầu tiên sau dấu #
     if len(parts) < 9:
-        raise ValueError("Không có đủ 9 giá trị sau dấu #.")
+        logging.info("Không có đủ 9 giá trị sau dấu #.")
 
     # Chuyển các phần tử thành số nguyên
     try:
         numbers = [int(part) for part in parts[:9]]
     except ValueError:
-        raise ValueError("Chuỗi chứa giá trị không phải số.")
+        logging.info("Chuỗi chứa giá trị không phải số.")
 
     return numbers
 
@@ -131,7 +131,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                     logging.info(f"Sent: {forward_frame.strip()}")
                     old_receive_frame = bed_parameters
         
-        # return
+        return
 
 while True:
 
