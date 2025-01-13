@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Thay đổi URL và token của bạn
 HA_URL = "http://192.168.100.42:8123/api/states"
-HA_TOKEN = "YOUR_LONG_LIVED_ACCESS_TOKEN"
+HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjZGE0OTdhN2QyNWM0NjYxOTgzMmJhNGJhOGNlYmE2NiIsImlhdCI6MTczNjc0ODQzMywiZXhwIjoyMDUyMTA4NDMzfQ.MF7qOcUrcbvrLELABfxlLqXLDDjjSGER57TbKUA6E7U"
 
 # Khởi tạo từ điển để lưu trữ giá trị trước đó
 previous_states = {}
