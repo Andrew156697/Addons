@@ -21,7 +21,8 @@ old_forward_frame = b""  # Đã là byte
 send_state = False
 old_receive_frame = b"0"  # Đã là byte
 bed_parameters = b"1"  # Đã là byte
-
+OPTIONS_PATH = "/data/options.json"
+PARAMETERS_PATH = "/data/parameters.json"
 # -----------------------FUNCTION-------------------
 def load_options(file_path):
     try:
@@ -30,6 +31,26 @@ def load_options(file_path):
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logging.error(f"Error loading options: {e}")
         return {}
+
+def save_options(file_path):
+    global start_state,first_state,pause_state,head,foot,lean,prehead,prefoot,prelean,Up_max2,Up_max3,Up_max4,sum_value
+    options = {
+        "start_state": start_state,
+        "first_state" : first_state,
+        "pause_state" : pause_state,
+        "head" : head,
+        "foot": foot,
+        "lean" : lean,
+        "prehead" : prehead,
+        "prefoot" : prefoot,
+        "prelean" : prelean,
+        "Up_max2" : Up_max2,
+        "Up_max3" : Up_max3,
+        "Up_max4" : Up_max4,
+        "sum_value" : sum_value
+    }  
+    with open(file_path, "w") as file:
+        json.dump(options, file)
 
 def op2parameter(options_path):
     global start_state, first_state, pause_state, head, foot, lean, sum_value
@@ -125,7 +146,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.5):
                             Up_max4
                         ) = bed_parameters
                     op2parameter("/data/options.json")
-                    logging.info(f"head: {head}, lean: {lean}")
+                    logging.info(f"head: {head}, foot: {foot}, lean: {lean}")
                     forward_frame = combine_values(start_state, first_state, pause_state, head, foot, lean, sum_value)
                     ser.write(forward_frame)
                     logging.info(f"Sent: {forward_frame.strip()}")

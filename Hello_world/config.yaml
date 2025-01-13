@@ -1,8 +1,8 @@
 
-name: "Hello_world"
-description: "Hello_world"
+name: "My Custom Addon"
+description: "Addon to handle button input"
 version: "1.0.0"
-slug: "Hello_world"
+slug: "my_buttons_addon"
 init: false
 arch:
   - aarch64

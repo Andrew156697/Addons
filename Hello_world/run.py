@@ -1,33 +1,33 @@
-import os
-import json
+import requests
+import logging
+import time
 
-def load_configuration():
-    """
-    Đọc cấu hình từ tệp options.json của Home Assistant.
-    """
+# Cấu hình logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Thay đổi URL và token của bạn
+HA_URL = "http://192.168.100.42:8123/api/states"
+HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjZGE0OTdhN2QyNWM0NjYxOTgzMmJhNGJhOGNlYmE2NiIsImlhdCI6MTczNjc0ODQzMywiZXhwIjoyMDUyMTA4NDMzfQ.MF7qOcUrcbvrLELABfxlLqXLDDjjSGER57TbKUA6E7U"
+
+def fetch_states():
+    headers = {
+        "Authorization": f"Bearer {HA_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    
     try:
-        # Đường dẫn mặc định của tệp cấu hình trong addon
-        config_path = "/data/options.json"
+        response = requests.get(HA_URL, headers=headers)
+        response.raise_for_status()  # Kiểm tra lỗi HTTP
+        states = response.json()
         
-        # Đọc tệp JSON
-        with open(config_path, "r") as file:
-            config = json.load(file)
-        
-        # Lấy giá trị của 'head' từ cấu hình
-        head = config.get("head", 50)  # Mặc định 50 nếu không được thiết lập
-        if not (0 <= head <= 100):
-            raise ValueError(f"Invalid head value: {head}. Must be between 0 and 100.")
-        
-        print(f"Configured head value: {head}")
-        return head
-    except FileNotFoundError:
-        print("Configuration file not found.")
-        return 50  # Giá trị mặc định nếu không tìm thấy tệp
-    except ValueError as e:
-        print(f"Configuration error: {e}")
-        return 50  # Giá trị mặc định nếu có lỗi
-# Load configuration
-head = load_configuration()
+        # In ra giá trị của các thực thể cụ thể
+        for state in states:
+            if state['entity_id'] in ['input_number.head', 'input_number.lean']:
+                logging.info(f"{state['entity_id']}: {state['state']}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error fetching data: {e}")
 
-# Hiển thị giá trị của `head`
-print(f"Head angle is set to: {head}°")
+if __name__ == '__main__':
+    while True:
+        fetch_states()
+        time.sleep(60)  # Lặp lại mỗi 60 giây
