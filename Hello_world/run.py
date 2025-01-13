@@ -30,4 +30,4 @@ def fetch_states():
 if __name__ == '__main__':
     while True:
         fetch_states()
-        time.sleep(60)  # Lặp lại mỗi 60 giây
+        # time.sleep(60)  # Lặp lại mỗi 60 giây
