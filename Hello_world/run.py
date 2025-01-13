@@ -22,7 +22,7 @@ def fetch_states():
         
         # In ra giá trị của các thực thể cụ thể
         for state in states:
-            if state['entity_id'] in ['input_number.head', 'input_number.lean']:
+            if state['entity_id'] in ['input_number.head', 'input_number.lean', 'input_number.foot']:
                 logging.info(f"{state['entity_id']}: {state['state']}")
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
