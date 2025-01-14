@@ -25,7 +25,7 @@ def fetch_states():
         
         # In ra giá trị của các thực thể cụ thể
         for state in states:
-            if state['entity_id'] in ['input_number.head', 'input_number.lean', 'input_number.foot']:
+            if state['entity_id'] in ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']:
                 current_value = state['state']
                 entity_id = state['entity_id']
                 
@@ -41,7 +41,7 @@ def set_values():
         "Authorization": f"Bearer {HA_TOKEN}",
         "Content-Type": "application/json",
     }
-    entities = ['input_number.head', 'input_number.lean', 'input_number.foot']
+    entities = ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']
     value = 50
 
     for entity_id in entities:
