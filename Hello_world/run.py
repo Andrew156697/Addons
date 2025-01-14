@@ -25,7 +25,7 @@ def fetch_states():
         
         # In ra giá trị của các thực thể cụ thể
         for state in states:
-            if state['entity_id'] in ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']:
+            if state['entity_id'] in ['input_number.head', 'input_number.lean', 'input_number.foot']:
                 current_value = state['state']
                 entity_id = state['entity_id']
                 
