@@ -36,26 +36,7 @@ def fetch_states():
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
 
-def set_values():
-    headers = {
-        "Authorization": f"Bearer {HA_TOKEN}",
-        "Content-Type": "application/json",
-    }
-    entities = ['input_number.head', 'input_number.lean', 'input_number.foot']
-    value = 50
-
-    for entity_id in entities:
-        url = f"{HA_URL}/{entity_id}"
-        payload = {"state": value}
-        try:
-            response = requests.post(url, headers=headers, json=payload)
-            response.raise_for_status()
-            logging.info(f"Set {entity_id} to {value}")
-        except requests.exceptions.RequestException as e:
-            logging.error(f"Error setting value for {entity_id}: {e}")
-
 if __name__ == '__main__':
     while True:
         fetch_states()
-        set_values()  # Gọi hàm để đặt giá trị
-        time.sleep(5)  # Lặp lại mỗi 60 giây
+        # time.sleep(60)  # Lặp lại mỗi 60 giây
